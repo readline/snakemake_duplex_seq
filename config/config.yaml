@@ -1,0 +1,24 @@
+samplesheet:
+    samplesheet.tsv
+
+workdir:
+    /data/RUNX1/project/1.FPDMM/01.WES/Pipe_230614
+
+references:
+    species:  homo_sapiens
+    release:  99
+    build:    hg38
+    fasta:    /data/yuk5/pipeline/wgs_germline/ref/gatk_bundle_hg38_v0/Homo_sapiens_assembly38.fasta
+modules:
+    singularity: singularity
+bins:
+    gatk3: /data/yuk5/app/GATK_3.8-1/GenomeAnalysisTK.jar
+simg:
+    bedtools:  singularity/bedtools_2.30.0.simg
+    bwa:  singularity/bwa_0.7.17.simg
+max-jobs-per-second: 1
+latency-wait: 120
+keep-going: true
+
+# singularity
+singularity: singularity exec -B /data,/vf,/gs9,/gpfs,/fdb,/spin1,/lscratch

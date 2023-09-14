@@ -1,1 +1,2 @@
-# snakemake_duplex_seq
+# snakemake_framework
+Snake make framework as a template
