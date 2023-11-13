@@ -3,23 +3,19 @@ import sys
 import pandas as pd
 
 def samplesheet(sspath):
-    df = pd.read_csv(sspath, sep='\t', index_col=2)
+    df = pd.read_csv(sspath, sep='\t', index_col=1)
     sample = {}
-    lib = {}
     run = {}
+    run2sample = {}
     for i in df.index:
-        ss = df.loc[i,'Sample']
-        li = df.loc[i,'Lib']
+        ss = df.loc[i,'sample']
         if ss not in sample:
             sample[ss] = []
-        if li not in lib:
-            lib[li] = []
-        if li not in sample[ss]:
-            sample[ss].append(li)
-        if i not in lib[li]:
-            lib[li].append(i)
-        run[i] = {n:df.loc[i,n] for n in df.columns}
-    return sample,lib,run
+        if i not in run:
+            sample[ss].append(i)
+            run2sample[i] = ss
+            run[i] = {'r1':df.loc[i,'read1'], 'r2':df.loc[i,'read2']}
+    return sample,run, run2sample
 
 if __name__ == '__main__':
     print(samplesheet(sys.argv[1]))
