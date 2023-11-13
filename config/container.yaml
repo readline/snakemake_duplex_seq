@@ -1,0 +1,5 @@
+cachedir: cache
+docker:
+    duplex:  docker://diracrnhlbi.azurecr.io/bio/duplex_seq_pipeline:2.1.4
+simg:
+    multiqc: https://depot.galaxyproject.org/singularity/multiqc%3A1.16--pyhdfd78af_0

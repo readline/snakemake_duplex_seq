@@ -1,12 +1,27 @@
 __default__:
     partition: norm
-    time: '1-00:00:00'
-    mem: 16
-    extra: "--gres=lscratch:20"
+    threads: 4
+    mem: 16g
+    time: '2-00:00:00'
+    gres: 'lscratch:50'
 
-bwa_mem:
-    time: '1-00:00:00'
-    partition: 'norm'
-    #out: 'logs/BWA.{run}.log'
-    #error: 'logs/BWA.{run}.err'
-    extra: ' --gres=lscratch:40 '
+Fastp:
+    partition: norm
+    threads: 8
+    mem: 16g
+    time: '2-00:00:00'
+    gres: 'lscratch:100'
+
+Duplex:
+    partition: norm
+    threads: 16
+    mem: 64g
+    time: '2-00:00:00'
+    gres: 'lscratch:100'
+
+Multiqc:
+    partition: norm
+    threads: 8
+    mem: 16g
+    time: '2-00:00:00'
+    gres: 'lscratch:100'
