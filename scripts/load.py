@@ -15,7 +15,7 @@ def samplesheet(sspath):
             sample[ss].append(i)
             run2sample[i] = ss
             run[i] = {'r1':df.loc[i,'read1'], 'r2':df.loc[i,'read2']}
-    return sample,run, run2sample
+    return sample, run, run2sample
 
 if __name__ == '__main__':
     print(samplesheet(sys.argv[1]))

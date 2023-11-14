@@ -93,6 +93,8 @@ def reference(config):
         except subprocess.CalledProcessError:
             raise Exception("Command exited with non-zero code.")
     print('Reference cache finished!')
+    with open('%s/ref.ok'%(refdir), 'w') as savefile:
+        pass
     print('#'*80)
     return True
 

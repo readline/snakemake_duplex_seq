@@ -5,8 +5,8 @@
 #SBATCH --parsable
 #SBATCH -J "[[PIPENICKNAME]]"
 #SBATCH --mail-type=BEGIN,END,FAIL
-#SBATCH --output "[[WORKDIR]]/Pipe_runtime/logs/Pipe_runtime.%j.out"
-#SBATCH --error  "[[WORKDIR]]/Pipe_runtime/logs/Pipe_runtime.%j.err"
+#SBATCH --output "[[WORKDIR]]/Pipe_runtime/[[SNAPSHOT]]/logs/Pipe_runtime.%j.out"
+#SBATCH --error  "[[WORKDIR]]/Pipe_runtime/[[SNAPSHOT]]/logs/Pipe_runtime.%j.err"
 set -euo pipefail
 
 current_hostname=$(hostname)
@@ -16,7 +16,7 @@ if [ "$current_hostname" == "biowulf.nih.gov" ]; then
     echo "Current hostname is biowulf.nih.gov. Stopping the script."
     exit 1
 else
-    module load snakemake
+    module load snakemake singularity
 fi
 
 uid=$(uuidgen|cut -d '-' -f1)
@@ -29,14 +29,14 @@ snakemake --latency-wait 120 --snakefile Snakefile -d "[[WORKDIR]]" \
   --latency-wait 120 all \
   --use-singularity \
   --singularity-args "-B [[BINDPATH]]" \
-  --configfile="[[WORKDIR]]/Pipe_runtime/config.yaml" \
+  --configfile="[[WORKDIR]]/Pipe_runtime/[[SNAPSHOT]]/config.yaml" \
   --printshellcmds \
-  --cluster-config "[[WORKDIR]]/Pipe_runtime/cluster.yaml" \
-  --cluster "sbatch --gres {cluster.gres} --cpus-per-task {cluster.threads} -p {cluster.partition} -t {cluster.time} --mem {cluster.mem} --out [[WORKDIR]]/Pipe_runtime/logs/slurm/{rule}.%j.out" \
+  --cluster-config "[[WORKDIR]]/Pipe_runtime/[[SNAPSHOT]]/cluster.yaml" \
+  --cluster "sbatch --gres {cluster.gres} --cpus-per-task {cluster.threads} -p {cluster.partition} -t {cluster.time} --mem {cluster.mem} --out [[WORKDIR]]/Pipe_runtime/[[SNAPSHOT]]/logs/slurm/{rule}.%j.out" \
   --jobname "{name}.{jobid}.uid_"$uid".sh" \
-  --stats "[[WORKDIR]]/Pipe_runtime/logs/runtime_statistics.json" \
+  --stats "[[WORKDIR]]/Pipe_runtime/[[SNAPSHOT]]/logs/runtime_statistics.json" \
   --keep-going \
   --keep-remote 2>&1
 
 # Create summary report
-snakemake -d "[[WORKDIR]]/Pipe_runtime" --report "[[WORKDIR]]/Pipe_runtime/Snakemake_Report.html"
+snakemake -d "[[WORKDIR]]/Pipe_runtime/[[SNAPSHOT]]" --report "[[WORKDIR]]/Pipe_runtime/[[SNAPSHOT]]/Snakemake_Report.html"

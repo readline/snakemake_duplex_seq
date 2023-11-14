@@ -5,6 +5,20 @@ __default__:
     time: '2-00:00:00'
     gres: 'lscratch:50'
 
+Merge1:
+    partition: norm
+    threads: 4
+    mem: 8g
+    time: '2-00:00:00'
+    gres: 'lscratch:10'
+
+Merge2:
+    partition: norm
+    threads: 4
+    mem: 8g
+    time: '2-00:00:00'
+    gres: 'lscratch:10'
+
 Fastp:
     partition: norm
     threads: 8

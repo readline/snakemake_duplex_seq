@@ -1,0 +1,1 @@
+sample,rglb,rgpl,rgpu,rgsm,reference,target_bed,maskBed,blast_db,targetTaxonId,baseDir,in1,in2,mqFilt,minMem,maxMem,cutOff,nCutOff,umiLen,spacerLen,locLen,readLen,adapterSeq,clipBegin,clipEnd,minClonal,maxClonal,minDepth,maxNs,recovery,cluster_dist,cm_outputs,cm_sumTypes,cm_filters,runSSCS,rerun_type

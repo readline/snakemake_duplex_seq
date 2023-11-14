@@ -1,6 +1,8 @@
-
 #!/usr/bin/env python
 import os,sys
+import gzip
+import numpy as np
+
 def allocated(resource, rule, lookup, default="__default__"):
     """Pulls resource information for a given rule. If a rule does not have any information 
     for a given resource type, then it will pull from the default. Information is pulled from
@@ -34,3 +36,32 @@ def ignore(samplelist, condition):
         # If condition is True, returns an empty list to prevent rule from running
         samplelist = []
     return samplelist
+
+def get_read_length(file_path, num_reads=100):
+    sequence_lengths = []
+    try:
+        # Check if the file is in gzip format
+        with gzip.open(file_path, 'rt') as file:
+            for _ in range(num_reads):
+                # Skip the Sequence identifier line
+                next(file)
+                # Read the Sequence line and get its length
+                sequence_line = next(file).strip()
+                sequence_lengths.append(len(sequence_line))
+                # Skip the Quality score identifier and Quality scores lines
+                next(file)
+                next(file)
+    except OSError:
+        # If not gzip, assume regular fastq format
+        with open(file_path, 'r') as file:
+            for _ in range(num_reads):
+                # Skip the Sequence identifier line
+                next(file)
+                # Read the Sequence line and get its length
+                sequence_line = next(file).strip()
+                sequence_lengths.append(len(sequence_line))
+                # Skip the Quality score identifier and Quality scores lines
+                next(file)
+                next(file)
+
+    return int(np.mean(sequence_lengths))
