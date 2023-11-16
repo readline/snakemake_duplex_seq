@@ -215,6 +215,11 @@ def main():
         os.system('rm %s'%(os.path.join(config['workdir'], 'Pipe_runtime', snapshot, 'Snakefile')))
     os.system('cp -r %s %s'%( os.path.join(pipedir, 'Snakefile'), os.path.join(config['workdir'], 'Pipe_runtime', snapshot, 'Snakefile') ))
     
+    # copy multiqc config
+    if os.path.exists(os.path.join(config['workdir'], 'Pipe_runtime', snapshot, 'multiqc.yaml')):
+        os.system('rm %s'%(os.path.join(config['workdir'], 'Pipe_runtime', snapshot, 'multiqc.yaml')))
+    os.system('cp -r %s %s'%( os.path.join(pipedir, "config", 'multiqc.yaml'), os.path.join(config['workdir'], 'Pipe_runtime', snapshot, 'multiqc.yaml') ))
+    
     # write pipeline submission bash script: captain.sh
     with open(os.path.join(config['workdir'], 'Pipe_runtime', snapshot, 'captain.sh'), 'w') as savefile:
         with open(os.path.join(pipedir, 'captain.sh')) as infile:

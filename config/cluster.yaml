@@ -39,3 +39,10 @@ Multiqc:
     mem: 16g
     time: '2-00:00:00'
     gres: 'lscratch:100'
+
+Merge_summary:
+    partition: norm
+    threads: 8
+    mem: 16g
+    time: '2-00:00:00'
+    gres: 'lscratch:100'

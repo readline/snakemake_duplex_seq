@@ -32,9 +32,12 @@ rule all:
         ),
 
         expand(
-            join(config['workdir'], "02.Duplex", "{sample}", "Final", "{sample}.report.html"),
+            join(config['workdir'], "02.Duplex", "{sample}", "workdir", "Final", "{sample}.report.html"),
             sample=sampledic,
         ),
+
+        report  = join(config['workdir'], "03.MultiQC", "multiqc_report.html"),
+        summary = join(config['workdir'], "All.Duplex.summary.tsv"),
 
 rule Merge1:
     input:
@@ -108,11 +111,11 @@ rule Duplex:
         reads1 = join(config['workdir'], "01.MergeData", "{sample}", "{sample}.R1.fq.gz"),
         reads2 = join(config['workdir'], "01.MergeData", "{sample}", "{sample}.R2.fq.gz"),
     output:
-        path   = directory(join(config['workdir'], "02.Duplex", "{sample}")),
-        report = join(config['workdir'], "02.Duplex", "{sample}", "Final", "{sample}.report.html"),
+        report = join(config['workdir'], "02.Duplex", "{sample}", "workdir", "Final", "{sample}.report.html"),
+        summary= join(config['workdir'], "02.Duplex", "{sample}", "{sample}.config.csv.summary.csv"),
     params:
         path   = join(config['workdir'], "02.Duplex","{sample}","workdir"),
-        config = join(config['pipelinedir'], "duplex_config", "{sample}.config.csv")
+        config = join(config['pipelinedir'], "duplex_config", "{sample}.config.csv"),
     log:
         out = join(config['pipelinedir'], "logs", "Duplex", "{sample}.o"),
         err = join(config['pipelinedir'], "logs", "Duplex", "{sample}.e"),
@@ -128,7 +131,53 @@ rule Duplex:
         ln -s {input.reads1} read1.fq.gz && \
         ln -s {input.reads2} read2.fq.gz && \
         cd .. && \
-        DS {wildcards.sample}.config.csv > {log.out} 2>{log.err} && \
-        rm workdir/read?.fq.gz
+        DS {wildcards.sample}.config.csv > {log.out} 2>{log.err} 
         '''
 
+rule Multiqc:
+    input:
+        expand(
+            join(config['workdir'], "02.Duplex", "{sample}", "workdir", "Final", "{sample}.report.html"),
+            sample=sampledic,
+        )
+    output:
+        path   = join(config['workdir'], "03.MultiQC"),
+        report = join(config['workdir'], "03.MultiQC", "multiqc_report.html"),
+    params:
+        config = join(config['pipelinedir'], "multiqc.yaml"),
+    log:
+        out = join(config['pipelinedir'], "logs", "Multiqc", "Merge.o"),
+        err = join(config['pipelinedir'], "logs", "Multiqc", "Merge.e"),
+    threads:
+        int(allocated("threads", "{rule}", cluster))
+    container:
+        config['container']['duplex']
+    shell:
+        cd {output.path}
+        multiqc \
+            -f \
+            -c {params.config} \
+            -o ./ \
+            ..
+
+rule Merge_summary:
+    input:
+        expand(
+            join(config['workdir'], "02.Duplex", "{sample}", "{sample}.config.csv.summary.csv"),
+            sample=sampledic,
+        )
+    output:
+        path   = join(config['workdir'], "All.Duplex.summary.tsv"),
+    params:
+        path   = config['workdir']
+    log:
+        out = join(config['pipelinedir'], "logs", "Merge_summary", "Merge.o"),
+        err = join(config['pipelinedir'], "logs", "Merge_summary", "Merge.e"),
+    threads:
+        int(allocated("threads", "{rule}", cluster))
+    shell:
+        '''
+        cd {params.path}
+        cat {input}|head -1|sed "s/,/\t/g" > {output.path}
+        cat {input}|grep -v "^RunID" |sed "s/,/\t/g">> {output.path}
+        '''
