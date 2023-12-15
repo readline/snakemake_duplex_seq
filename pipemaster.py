@@ -40,6 +40,7 @@ def main():
         adapterseq = 'NNNNNNNAGATCGGAAGAG'
         options.umilen=5
         options.spacerlen=2
+        options.loclen=5
         
     
 

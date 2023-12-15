@@ -28,8 +28,8 @@ Fastp:
 
 Duplex:
     partition: norm
-    threads: 16
-    mem: 64g
+    threads: 4
+    mem: 32g
     time: '2-00:00:00'
     gres: 'lscratch:100'
 
@@ -42,7 +42,7 @@ Multiqc:
 
 Merge_summary:
     partition: norm
-    threads: 8
-    mem: 16g
+    threads: 2
+    mem: 4g
     time: '2-00:00:00'
-    gres: 'lscratch:100'
+    gres: 'lscratch:10'
