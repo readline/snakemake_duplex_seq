@@ -48,7 +48,7 @@ rule Merge1:
         out = join(config['pipelinedir'], "logs", "Merge1", "{sample}.o"),
         err = join(config['pipelinedir'], "logs", "Merge1", "{sample}.e"),
     threads:
-        int(allocated("threads", "{rule}", cluster))
+        int(allocated("threads", "Merge1", cluster))
     container:
         config['container']['duplex']
     shell:
@@ -70,7 +70,7 @@ rule Merge2:
         out = join(config['pipelinedir'], "logs", "Merge2", "{sample}.o"),
         err = join(config['pipelinedir'], "logs", "Merge2", "{sample}.e"),
     threads:
-        int(allocated("threads", "{rule}", cluster))
+        int(allocated("threads", "Merge2", cluster))
     shell:
         """
         if [ $(ls -1 {input.reads2} | wc -l) -eq 1 ]; then
@@ -92,7 +92,7 @@ rule Fastp:
         out = join(config['pipelinedir'], "logs", "Fastp", "{sample}.o"),
         err = join(config['pipelinedir'], "logs", "Fastp", "{sample}.e"),
     threads:
-        int(allocated("threads", "{rule}", cluster))
+        int(allocated("threads", "Fastp", cluster))
     container:
         config['container']['duplex']
     shell:
@@ -120,7 +120,7 @@ rule Duplex:
         out = join(config['pipelinedir'], "logs", "Duplex", "{sample}.o"),
         err = join(config['pipelinedir'], "logs", "Duplex", "{sample}.e"),
     threads:
-        int(allocated("threads", "{rule}", cluster))
+        int(allocated("threads", "Duplex", cluster))
     container:
         config['container']['duplex']
     shell:
@@ -141,7 +141,7 @@ rule Multiqc:
             sample=sampledic,
         )
     output:
-        path   = join(config['workdir'], "03.MultiQC"),
+        path   = directory(join(config['workdir'], "03.MultiQC")),
         report = join(config['workdir'], "03.MultiQC", "multiqc_report.html"),
     params:
         config = join(config['pipelinedir'], "multiqc.yaml"),
@@ -149,16 +149,18 @@ rule Multiqc:
         out = join(config['pipelinedir'], "logs", "Multiqc", "Merge.o"),
         err = join(config['pipelinedir'], "logs", "Multiqc", "Merge.e"),
     threads:
-        int(allocated("threads", "{rule}", cluster))
+        int(allocated("threads", "Multiqc", cluster))
     container:
-        config['container']['duplex']
+        config['container']['multiqc']
     shell:
+        '''
         cd {output.path}
         multiqc \
             -f \
             -c {params.config} \
             -o ./ \
-            ..
+            .. > {log.out} 2>{log.err}
+        '''
 
 rule Merge_summary:
     input:
@@ -174,10 +176,9 @@ rule Merge_summary:
         out = join(config['pipelinedir'], "logs", "Merge_summary", "Merge.o"),
         err = join(config['pipelinedir'], "logs", "Merge_summary", "Merge.e"),
     threads:
-        int(allocated("threads", "{rule}", cluster))
+        int(allocated("threads", "Merge_summary", cluster))
     shell:
         '''
         cd {params.path}
-        cat {input}|head -1|sed "s/,/\t/g" > {output.path}
-        cat {input}|grep -v "^RunID" |sed "s/,/\t/g">> {output.path}
+        python {config[pipelinedir]}/scripts/merge_summary.py {input} > {output.path} 2>{log.err}
         '''
