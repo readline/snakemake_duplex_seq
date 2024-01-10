@@ -3,3 +3,15 @@ references:
     gatkbundle:
         link:   /fdb/GATK_resource_bundle/hg38-v0
         path:   hg38
+    snpeff:
+        link:   /fdb/snpEff/5.2/data
+        path:   snpeff
+    dbnsfp:
+        link:   /fdb/dbNSFP/4.4a/dbNSFP4.4a_hg38.txt.gz
+        path:   dbNSFP4.4a_hg38.txt.gz
+    dbnsfptbi:
+        link:   /fdb/dbNSFP/4.4a/dbNSFP4.4a_hg38.txt.gz.tbi
+        path:   dbNSFP4.4a_hg38.txt.gz.tbi
+    gnomad:
+        link:   /fdb/gnomad/release-4.0/vcf/genomes
+        path:   gnomad

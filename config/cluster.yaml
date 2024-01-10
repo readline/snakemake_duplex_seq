@@ -33,6 +33,13 @@ Duplex:
     time: '2-00:00:00'
     gres: 'lscratch:100'
 
+Annotation:
+    partition: norm
+    threads: 4
+    mem: 16g
+    time: '2-00:00:00'
+    gres: 'lscratch:50'
+
 Multiqc:
     partition: norm
     threads: 8

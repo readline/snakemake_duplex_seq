@@ -124,7 +124,10 @@ def main():
     config['samplesheet'] = os.path.realpath(options.samplesheet)
     config['workdir'] = os.path.realpath(options.workdir)
     config['snapshot'] = snapshot
-    config['pipelinedir'] = os.path.join(config['workdir'], 'Pipe_runtime', snapshot)
+    if os.path.exists(os.path.join(config['workdir'], 'Pipe_runtime', 'latest')):
+        os.system('rm -rf %s'%(os.path.join(config['workdir'], 'Pipe_runtime', 'latest')))
+    os.system('cd %s/Pipe_runtime && ln -s %s latest'%(config['workdir'], snapshot))
+    config['pipelinedir'] = os.path.join(config['workdir'], 'Pipe_runtime', 'latest')
     config['cachedir'] = os.path.realpath(options.cachedir)
     config['options'] = {}
                
