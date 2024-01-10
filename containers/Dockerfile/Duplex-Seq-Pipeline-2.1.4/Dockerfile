@@ -15,5 +15,5 @@ RUN mamba install -c bioconda -y snakemake==7.32.4 fastp==0.23.4 && \
     cd Duplex-Seq-Pipeline && \
     bash setupDS.sh $CORES && \
     rm -rf test
-
+RUN mamba install -y -c bioconda snpeff==5.2 snpsift==5.2
 ENV PATH=/opt/Duplex-Seq-Pipeline:$PATH
